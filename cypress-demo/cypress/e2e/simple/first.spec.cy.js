@@ -1,10 +1,14 @@
+/// <reference types="cypress" />
+
 /**
  * SUMMARY:
  * This example is based on the "Writing Your First E2E Test" guide in the cypress.io docs.
  * 
  * This is a very simple test which navigates to David Nuzik's GitHub profile, searches (cy.contains) or gets specific
  * text/elements, takes actions, and makes assertions. It shows some of the basic principles of visiting a page and
- * then navigating it like a user may and making assertions.
+ * then navigating it like a user may and making assertions. Take note that it is generally bad practice to test
+ * against a production app and even more so for a server/system you do not own and control. An exception is made in
+ * this case since this project is a simple demonstration and results in extremely low load on GitHub servers.
  * 
  * REMARKS:
  * Searching for strings and clicking in this manner ("/k3s") is not always an ideal setup. Depending on the app,
@@ -20,9 +24,9 @@
  * means to differentiate between elements should more than one contain the specified string.
  */
 
-describe('template spec', () => {
-  it('/davidnuzik - Simple assertions', () => {
-    // Visit /davidnuzik, check for "/k3s" string, click on the result
+describe('/davidnuzik example GETs', () => {
+  it('Navigates to /davidnuzik and performs basic checks with simple locators and assertions', () => {
+    // Visit /davidnuzik, ensure page loads, check for "/k3s" string, click on the result
     cy.visit('https://github.com/davidnuzik')
     cy.contains('/k3s').click() //cy.get with specific search for id and/or attributes is a better practice (see remarks)
 
@@ -35,7 +39,7 @@ describe('template spec', () => {
     // Verify the URL should now include "/issues"
     cy.url().should('include', '/issues')
 
-    // Get the search field, type into it
+    // Get the issues search field, type into it
     cy.get('[id="js-issues-search"]').type('author:davidnuzik')
     // Verify the the expected value was appended to the pre-filled string
     cy.get('#js-issues-search').should('have.value', 'is:issue is:open author:davidnuzik') // # is a shortcut for an id
