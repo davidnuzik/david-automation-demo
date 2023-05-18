@@ -52,6 +52,8 @@ describe('/k3s-io/k3s top nav bar GETs', () => {
     // NOTE: Optionally alter cy.visit line to nav to https://github.com/davidnuzik/david-automation-demo if you want to trigger else block
     // TODO: Test if GitHub links references to files in a project, like: https://github.com/davidnuzik/david-automation-demo/cypress/lib/helpers/tabCountCheck.js
     //       If it does, it may be best if we make this spec (and throughout the project) more DRY. However, it's best if the user can nav to the helper easily in GitHub...
+    // TEMP: More testing to see if possible to hyperlink in GitHub code renderer: github.com/davidnuzik [#L54](https://github.com/davidnuzik/david-automation-demo/blob/main/cypress-demo/cypress/e2e/simple/check-tabs.spec.cy.js#L54)
+    // TEMP: <a href="http://www.ucsb.edu/" >target="_blank"> UCSB</a> 
     cy.get('#issues-tab > #issues-repo-tab-count').invoke('text').then(parseInt).then(($issueCount) => {
       if ($issueCount > 0) {
         cy.get('#issues-tab > #issues-repo-tab-count').should('be.visible')
