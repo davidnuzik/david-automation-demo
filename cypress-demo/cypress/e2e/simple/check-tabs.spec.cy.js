@@ -22,52 +22,129 @@
  */
 
 describe('/k3s-io/k3s top nav bar GETs', () => {
+  // TODO: WIP: Parameterize the various tab class names here and reference as variables below.
+  let codeTab = "#code-tab"
+  let issuesTab = "#issues-tab"
+  let issuesTabCount = "#issues-tab > #issues-repo-tab-count" // > Optional, but ensures <span> element is indeed a child
+  let pullsTab = "#pull-requests-tab"
+  let pullsTabCount = "#pull-requests-tab > #pull-requests-repo-tab-count"
+  let discussionsTab = "#discussions-tab"
+  let actionsTab = "#actions-tab"
+  let projectsTab = "#projects-tab"
+  let projectsTabCount = "#projects-tab > #projects-repo-tab-count"
+  let wikiTab = "#wiki-tab"
+  let securityTab = "#security-tab"
+
   it('Navigates to /k3s-io/k3s and performs basic checks against the top tabs nav bar', () => {
+    /**
+     * NOTE: DRYness -- Code could be abstracted such as in a helper function in several areas, however I have not
+     * done this throughout the spec in order to keep all assertions in the spec, which is generally best practice.
+     * Also note that if you want to trigger the else blocks for TabCount checks, simply replace the cy.visit url
+     * with: https://github.com/davidnuzik/david-automation-demo since the repo does not contain any Issues/pulls/etc
+     */
+    // TODO: If use /david-automation-demo, though, DISCUSSIONS tab does not exist so test fails! ^^^
+
     // Visit /k3s-io/k3s and ensure page loads
     cy.visit('https://github.com/k3s-io/k3s')
 
-    // ##### CODE TAB #####
+    // ########## CODE TAB ##########
 
-    // Verify the Code tab is selected (has aria-current attribute)
-    cy.get('#code-tab').should('have.attr', 'aria-current', 'page')
-    // Verify the Code tab "octicon-code" svg image is present
-    cy.get('#code-tab > svg').should('have.class', 'octicon-code')
-    // Verify that the next tab is NOT selected (does NOT have aria-current attribute)
-    // NOTE: This could be abstracted. A helper function could be provided a parameter indicating the tab we want to check is active or not.
-    //       Such a function could also check that all other tabs are not active, however it's preferable to only do assertions in the spec.
-    cy.get('#issues-tab').should('not.have.attr', 'aria-current', 'page')
+    // Code tab should be selected, have "octicon-code" svg image, and the issues tab should NOT be selected
+    cy.get(codeTab).should('have.attr', 'aria-current', 'page') // Based on testing, aria-current is only used for the current active tab
+    cy.get(codeTab + ' > svg').should('have.class', 'octicon-code')
+    cy.get(issuesTab).should('not.have.attr', 'aria-current', 'page')
 
-    // ##### ISSUES TAB #####
+    // ########## ISSUES TAB ##########
 
-    // Click on the Issues tab
-    cy.get('#issues-tab').click()
-    // Verify the url now includes /issues
+    // Click on Issues tab, url should include /issues, tab should be selected, should have "octicon-issue-opened" svg
+    // image, and the Pull requests tab should NOT be selected
+    cy.get(issuesTab).click()
     cy.url().should('include', '/issues')
-    // Verify the Issues tab is selected (has aria-current attribute)
-    cy.get('#issues-tab').should('have.attr', 'aria-current', 'page')
-    // Verify the Issues tab "octicon-issue-opened" svg image is present. Note this image is shown whether or not there are open issues.
-    cy.get('#issues-tab > svg').should('have.class', 'octicon-issue-opened')
+    cy.get(issuesTab).should('have.attr', 'aria-current', 'page')
+    cy.get(issuesTab + ' > svg').should('have.class', 'octicon-issue-opened') // GitHub shows the "octicon-issue-opened" SVG image whether or not there are open issues
+    cy.get(pullsTab).should('not.have.attr', 'aria-current', 'page')
 
     // Check if #issues-repo-tab-count is greater than 0 (which is typical), verify it is visible, else that it is hidden
-    // NOTE: Optionally alter cy.visit line to nav to https://github.com/davidnuzik/david-automation-demo if you want to trigger else block
-    // TODO: Test if GitHub links references to files in a project, like: https://github.com/davidnuzik/david-automation-demo/cypress/lib/helpers/tabCountCheck.js
-    //       If it does, it may be best if we make this spec (and throughout the project) more DRY. However, it's best if the user can nav to the helper easily in GitHub...
-    // TEMP: More testing to see if possible to hyperlink in GitHub code renderer: github.com/davidnuzik [#L54](https://github.com/davidnuzik/david-automation-demo/blob/main/cypress-demo/cypress/e2e/simple/check-tabs.spec.cy.js#L54)
-    // TEMP: <a href="http://www.ucsb.edu/" >target="_blank"> UCSB</a> 
-    cy.get('#issues-tab > #issues-repo-tab-count').invoke('text').then(parseInt).then(($issueCount) => {
+    cy.get(issuesTabCount).invoke('text').then(parseInt).then(($issueCount) => {
       if ($issueCount > 0) {
-        cy.get('#issues-tab > #issues-repo-tab-count').should('be.visible')
+        cy.get(issuesTabCount).should('be.visible')
       } else {
-        cy.get('#issues-tab > #issues-repo-tab-count').should('be.hidden')
+        cy.get(issuesTabCount).should('be.hidden') // GitHub hides this element when count is 0
       }
     })
 
-    // ##### PULL REQUESTS TAB #####
-    // Click on the Pull requests tab. Verify is active, has correct svg, and url now contains /pulls
-    cy.get('#pull-requests-tab').click()
-    cy.url().should('include', '/pulls')
-    // TODO: DRYness? See above issues-tab if/else block.
-    // TODO: Continue with WIP spec. Wrap up Pull Requests check and then move on to next tab and so on.
+    // ########## PULL REQUESTS TAB ##########
 
+    // Click on the Pull requests tab, url should include /pulls, tab should be selected, should have 
+    // "octicon-git-pull-request" svg image, and the Discussions tab should NOT be selected
+    cy.get(pullsTab).click()
+    cy.url().should('include', '/pulls')
+    cy.get(pullsTab).should('have.attr', 'aria-current', 'page')
+    cy.get(pullsTab + ' > svg').should('have.class', 'octicon-git-pull-request')
+    cy.get(discussionsTab).should('not.have.attr', 'aria-current', 'page')
+
+    // Check if #pull-requests-repo-tab-count is greater than 0 (which is typical), verify it is visible, else that it is hidden
+    cy.get(pullsTabCount).invoke('text').then(parseInt).then(($pullsCount) => {
+      if ($pullsCount > 0) {
+        cy.get(pullsTabCount).should('be.visible')
+      } else {
+        cy.get(pullsTabCount).should('be.hidden') // GitHub hides this element when count is 0
+      }
+    })
+
+    // ########## DISCUSSIONS TAB ##########
+
+    // Click on the Discussions tab, url should include /discussions, tab should be selected, should have 
+    // "octicon-comment-discussion" svg image, and the Actions tab should NOT be selected
+    cy.get(discussionsTab).click()
+    cy.url().should('include', '/discussions')
+    cy.get(discussionsTab).should('have.attr', 'aria-current', 'page')
+    cy.get(discussionsTab + ' > svg').should('have.class', 'octicon-comment-discussion')
+    cy.get(actionsTab).should('not.have.attr', 'aria-current', 'page')
+
+    // ########## ACTIONS TAB ##########
+
+    // Click on the Actions tab, url should include /actions, tab should be selected, should have 
+    // "octicon-play" svg image, and the Projects tab should NOT be selected
+    cy.get(actionsTab).click()
+    cy.url().should('include', '/actions')
+    cy.get(actionsTab).should('have.attr', 'aria-current', 'page')
+    cy.get(actionsTab + ' > svg').should('have.class', 'octicon-play')
+    cy.get(projectsTab).should('not.have.attr', 'aria-current', 'page')
+
+    // ########## PROJECTS TAB ##########
+
+    // Click on the Projects tab, url should include /actions, tab should be selected, should have 
+    // "octicon-table" svg image, and the Wiki tab should NOT be selected
+    cy.get(projectsTab).click()
+    cy.url().should('include', '/projects')
+    cy.get(projectsTab).should('have.attr', 'aria-current', 'page')
+    cy.get(projectsTab + ' > svg').should('have.class', 'octicon-table')
+    cy.get(wikiTab).should('not.have.attr', 'aria-current', 'page')
+
+    // Check if #projects-repo-tab-count is greater than 0 (which is typical), verify it is visible, else that it is hidden
+    cy.get(projectsTabCount).invoke('text').then(parseInt).then(($projectsCount) => {
+      if ($projectsCount > 0) {
+        cy.get(projectsTabCount).should('be.visible')
+      } else {
+        cy.get(projectsTabCount).should('be.hidden') // GitHub hides this element when count is 0
+      }
+    })
+
+    // ########## WIKI TAB ##########
+
+    // Click on the Projects tab, url should include /wiki, tab should be selected, should have 
+    // "octicon-book" svg image, and the Wiki tab should NOT be selected
+    cy.get(wikiTab).click()
+    cy.url().should('include', '/wiki')
+    cy.get(wikiTab).should('have.attr', 'aria-current', 'page')
+    cy.get(wikiTab + ' > svg').should('have.class', 'octicon-book')
+    cy.get(securityTab).should('not.have.attr', 'aria-current', 'page')
+
+    // ########## SECURITY TAB ##########
+    // TEMP: svg is: octicon-shield
+    // TODO: Based on default Cypress browser resolution, SECURITY and INSIGHTS tabs will be hidden and instead on the DETAILS MENU as list objects. As such need to alter locator method
+    //       Also note that ideally changing resolution should NOT BREAK TESTS, as such it would be more ideal if there was a function/solver to find. Additionally SECURITY tab also needs
+    //       count check as well (just like pulls and issues).
   })
 })
