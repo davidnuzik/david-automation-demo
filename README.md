@@ -21,7 +21,8 @@ rather my intent is to show my ability to effectively design and code test cases
 for each test.
 
 ### Cypress Demo
-This framework was created with E2E tests which can be found at `./cypress-demo/cypress/e2e`
+This framework was created with E2E tests which can be found at `./cypress-demo/cypress/e2e` or by clicking [here](https://github.com/davidnuzik/david-automation-demo/tree/main/cypress-demo/cypress/e2e).
 
 ### Selenium Demo
 This framework was configured with Maven and JUnit and tests can be found at `.selenium-demo/src/test/java/com/mycompany/app`
+or by clicking [here](https://github.com/davidnuzik/david-automation-demo/tree/main/selenium-demo/src/test/java/com/mycompany/app).
