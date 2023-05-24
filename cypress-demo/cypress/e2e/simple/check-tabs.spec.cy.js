@@ -142,9 +142,13 @@ describe('/k3s-io/k3s top nav bar GETs', () => {
     cy.get(securityTab).should('not.have.attr', 'aria-current', 'page')
 
     // ########## SECURITY TAB ##########
+    
     // TEMP: svg is: octicon-shield
-    // TODO: Based on default Cypress browser resolution, SECURITY and INSIGHTS tabs will be hidden and instead on the DETAILS MENU as list objects. As such need to alter locator method
-    //       Also note that ideally changing resolution should NOT BREAK TESTS, as such it would be more ideal if there was a function/solver to find. Additionally SECURITY tab also needs
-    //       count check as well (just like pulls and issues).
+    // TODO: Based on default Cypress browser resolution, SECURITY and INSIGHTS tabs will be hidden and instead on 
+    //       the DETAILS MENU as list objects. My plan is going to be to alter the default viewport size to a more
+    //       common resolution and here test desktop/web then in a separate spec or set of specs test mobile. This
+    //       way we can have the best of both worlds - test conventional tabs and also test when the viewport is
+    //       small (such as mobile view) and when the tabs are in the dropdown menu.
+
   })
 })
