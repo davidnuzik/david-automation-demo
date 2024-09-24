@@ -1,5 +1,9 @@
 # David Nuzik's Automation Demo
 
+## Update
+This project requires some updates such as for additional coverage with Cypress and Selenium.
+Additionally, I have been working a lot with BASH lately in an effort to emulate a TTY for testing of the Wordfence CLI with Defiant using the BATS testing framework. With any luck I'll be able to make that project public this year (2024).
+
 ## About
 This project was created to demonstrate my ability to pick up a new testing framework and run with it.
 
